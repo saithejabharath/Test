@@ -66,5 +66,6 @@ metadata:
 spec:
   ports:
   - port: 8080
+  type: LoadBalancer
   selector:
     app: global-api
