@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: global-api
+#  namespace: globaleinvoice
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 0
+  selector:
+    matchLabels:
+      app: global-api
+  template:
+    metadata:
+      labels:
+        app: global-api
+    spec:
+      securityContext:
+          runAsNonRoot: true
+          runAsUser: 100
+      containers:
+      - name: global-api
+        image: jenkins/jenkins:latest
+        # envFrom:
+        # - configMapRef:
+        #     name: global-config
+        # - secretRef:
+        #     name: azure-creds
+        #args: ["java","-Dserver.port=8081", "-Xmx7G", "-XX:+UnlockExperimentalVMOptions","-XX:+UseZGC", "-Xlog:gc*:file=/tmp/gc.log:time,level,tags", "-XX:MetaspaceSize=256m", "-XX:MaxMetaspaceSize=256m", "-XX:+HeapDumpOnOutOfMemoryError", "-jar", "/opt/global-api.jar"]
+        ports:
+        - containerPort: 8080
+      #   startupProbe:
+      #     tcpSocket:
+      #       port: 8081
+      #     periodSeconds: 30
+      #     #initialDelaySeconds: 300
+      #     failureThreshold: 40
+      #   readinessProbe:
+      #     tcpSocket:
+      #       port: 8081
+      #     periodSeconds: 10
+      #     failureThreshold: 3
+      #   resources:
+      #     requests:
+      #       cpu: "2"
+      #       memory: "8Gi"
+      #     limits:
+      #       cpu: "8"
+      #       memory: "8Gi"
+      # nodeSelector:
+      #   agentpool: application      
+      # imagePullSecrets:
+      # - name: imagepull
+      #securityContext:
+      #  runAsUser: 901  
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: global-api
+#  namespace: globaleinvoice
+spec:
+  ports:
+  - port: 8080
+  selector:
+    app: global-api
