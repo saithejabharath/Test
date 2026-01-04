@@ -23,7 +23,7 @@ spec:
           runAsUser: 100
       containers:
       - name: global-api
-        image: jenkins:2.60.3
+        image: tomcat:latest
         # envFrom:
         # - configMapRef:
         #     name: global-config
